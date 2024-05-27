@@ -1,21 +1,20 @@
-# Use the official NVIDIA CUDA image from the Docker Hub for GPU support
-FROM nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
+# Use the official Python image from the Docker Hub
+FROM python:3.9-slim
 
 # Set the working directory
 WORKDIR /app
 
-# Install necessary libraries and Python
+# Install necessary libraries for GPU support and other dependencies
 RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
     libgl1-mesa-glx \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
 COPY requirements.txt .
 
 # Install the dependencies
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code into the container
 COPY . .
@@ -24,4 +23,4 @@ COPY . .
 EXPOSE 5000
 
 # Define the command to run the app
-CMD ["python3", "app.py"]
+CMD ["python", "app.py"]
