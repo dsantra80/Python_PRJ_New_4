@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-import torch
 from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
 from config import Config
 
@@ -25,10 +24,12 @@ text_generator = pipeline(
     use_auth_token=HF_TOKEN
 )
 
+
 def get_response(prompt):
     sequences = text_generator(prompt, temperature=Config.TEMPERATURE)
     gen_text = sequences[0]["generated_text"]
     return gen_text
+
 
 @routes.route('/generate', methods=['POST'])
 def generate():
@@ -38,6 +39,7 @@ def generate():
         return jsonify({"error": "No prompt provided"}), 400
     response = get_response(prompt)
     return jsonify({"response": response})
+
 
 @routes.route('/status', methods=['GET'])
 def status():
